@@ -9,7 +9,7 @@ import RaceTrack from "../pista";
 const HomePage = () => {
     return(
       <div style={{  width: "100%", height: "100%", display: "flex", justifyContent: "center",
-        alignItems: "center", backgroundColor: "grey" }}><RaceTrack/></div>
+        alignItems: "center", backgroundColor: "white" }}><RaceTrack/></div>
     )
 }
 export default HomePage;
