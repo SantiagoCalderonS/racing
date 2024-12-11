@@ -2,9 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-import Image from "next/image";
-
-import RaceTrack from "../pista";
 import Header from "../header";
 
 import Link from "next/link";
