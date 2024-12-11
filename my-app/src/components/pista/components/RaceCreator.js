@@ -1,3 +1,4 @@
+
 export function randomRaceTrack (){
 
     var carriles = []
@@ -7,6 +8,8 @@ export function randomRaceTrack (){
         
         carriles.push({slot: num, side: sides[Math.floor(Math.random() * sides.length)]})
     }
+
+    
     
     return carriles
 }

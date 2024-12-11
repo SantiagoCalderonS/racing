@@ -4,20 +4,18 @@ import { useEffect, useState } from "react";
 
 import Image from "next/image";
 
-import RaceTrack from "../pista";
+import Track from "../pista";
 import Header from "../header";
 
-import Link from "next/link";
-
-const HomePage = () => {
+const RaceTrack = () => {
     return(
       <div style={{display: "flex", width: "100vw", height: "100vh" }}>
           <Header/>
       <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center",
         alignItems: "center", backgroundColor: "grey" }}>
-          <Link href={"/racetrack"}><button style={{ width: "200px", height: "100px", backgroundColor: "white", border : "solid 2px black", borderRadius:"5px"}}>Empezarar carrera</button></Link>
+          <Track/>
           </div>
           </div>
     )
 }
-export default HomePage;
+export default RaceTrack;

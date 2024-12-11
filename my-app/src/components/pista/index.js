@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 
 import Image from "next/image";
 
-import Player from "@/utils/pica.png"
+import Player from "@/utils/slime.gif"
 
 import { randomRaceTrack } from "./components/RaceCreator";
 
-
+import useScreenSize from "@/hooks/windowSize"
 /*const RaceTrack = () => {
     
   const [pista, setP ]= useState([
@@ -103,8 +103,13 @@ setPosition(position-1)
     )
 }*/
 
-const RaceTrack = () => {
-    
+import Field from "./components/field";
+
+const Track = () => {
+  
+  //estado de Active, que hace referencia a que la "carrera" esta activa
+  //una funcion que active el estado y un boton
+
  /* const pista = [
     {slot : 0, side: "right"},
     {slot : 1, side: "right"}, 
@@ -114,6 +119,8 @@ const RaceTrack = () => {
     {slot : 5, side: "right"},
     {slot : 6, side: "left"},
 ]*/
+
+const [Active, setAct] = useState(false)
 
 const [pista, setPista] = useState([])
 
@@ -130,49 +137,65 @@ useEffect(()=>{
 
 const handlerPosition = (event) => {
   
-  if( position === 1){
-    return setPosition(pista.length-1)
+  if( position === 0){
+     setPosition(pista.length-1)
+     setSite({start: pista.length - 3, end: pista.length})
   } else if(event.key === 'ArrowLeft'){
-
-    setSite({start: !site.start? site.start : site.start-1, end: site.end-1})
-           setPosition(position-1) 
-            position < pista.length-1 && pista[position-1].side === "left" ? setPosition(position-1) : ""
+            if(position > 0 && pista[position-1].side === "left"){
+              !site.start? "" : setSite({start:site.start-1, end: site.end-1})//si ya esta al final no seguir avanzando
+              setPosition(position-1)
+            }else{
+              setPosition(pista.length-1)
+              setSite({start: pista.length - 3, end: pista.length})
+           }
             return
         }else{
-          setSite({start: !site.start? site.start : site.start-1, end: site.end-1})
+          if(position > 0 && pista[position-1].side === "right"){
+            !site.start? "" : setSite({start:site.start-1, end: site.end-1})//si ya esta al final no seguir avanzando
             setPosition(position-1)
-             position < pista.length-1 && pista[position-1].side === "right" ? setPosition(position-1) : ""
-            return
+          }else{
+            setPosition(pista.length-1)
+            setSite({start: pista.length - 3, end: pista.length})
+         }
+          return
+            
         }
     
 }
 
+const dimensiones= useScreenSize()
 
-const Jugador = (<Image alt="pikachu" width= {200}  height= {200} src={Player}></Image>)
+
 
 
 return(
-    <div style={{ maxHeight: "820px", overflow: "hidden", width: "30%" }} tabIndex={0} className="pista" onKeyDown={(event) => handlerPosition(event)}>
+  <>
+  <div style={{ minHeight:  `${dimensiones.height*0.95}px`, overflow: "hidden", width: `${dimensiones.width*0.30}px`, minWidth: "500px", backgroundColor: "white" }} tabIndex={0} className="pista" onKeyDown={(event) => setTimeout(() =>{handlerPosition(event)}, 100)}>
+  <Field dimensiones={dimensiones} pista={pista} position={position} site={site}/></div>
+  {/*<div style={{ minHeight:  `${dimensiones.height*0.95}px`, overflow: "hidden", width: `${dimensiones.width*0.30}px`, minWidth: "500px", backgroundColor: "white" }} tabIndex={0} className="pista" onKeyDown={(event) => setTimeout(() =>{handlerPosition(event)}, 100)}>
         {pista?.slice(site.start, site.end).map((P)=>
         ( P.side === "left" ?
           (
-              <div key={P.slot} style={{display: "flex", marginBottom: "5px", marginTop: "5px", width: "90%", height:"200px",}}>
-                    <div className="left" style={{width: "50%", borderRadius: "5px", border: "solid 2px rgb(0, 170, 41)", margin: "2px", backgroundColor: "rgb(95, 255, 134, 0.5)"}}>
-                        {position === P.slot? (Jugador): ""}
+              <div key={P.slot} style={{display: "flex", marginBottom: "5px", marginTop: "5px", width: "100%", minHeight:"200px", height: `${dimensiones.height*0.95*0.33}px`,}}>
+                    <div className="left" style={{width: "50%", borderRadius: "5px", border: "solid 2px rgb(0, 170, 41)", margin: "2px", display:"flex", justifyContent: "center", backgroundColor: "rgb(95, 255, 134, 0.5)"}}>
+                        {position === P.slot? (Jugador): P.slot}
                     </div>
-                    <div className="right" style={{width: "50%", borderRadius: "5px", border: "solid 2px rgb(170, 0, 0 )", margin: "2px", backgroundColor: "rgb(255, 95, 95, 0.5)"}}></div>
+                    <div className="right" style={{width: "50%", borderRadius: "5px", border: "solid 2px rgb(170, 0, 0 )", margin: "2px", display:"flex", justifyContent: "center", backgroundColor: "rgb(255, 95, 95, 0.5)"}}>{P.slot}</div>
                 </div>
         )
-        : ( <div key={P.slot} style={{display: "flex", marginBottom: "5px", marginTop: "5px", width: "90%", height:"200px",}}>
+        : ( <div key={P.slot} style={{display: "flex", marginBottom: "5px", marginTop: "5px", width: "100%", minHeight:"200px", height: `${dimensiones.height*0.95*0.33}px`,}}>
 
-                    <div className="left" style={{width: "50%", borderRadius: "5px", border: "solid 2px rgb(170, 0, 0 )", margin: "2px",backgroundColor: "rgb(255, 95, 95, 0.5)"}}></div>
+                    <div className="left" style={{width: "50%", borderRadius: "5px", border: "solid 2px rgb(170, 0, 0 )", margin: "2px", display:"flex", justifyContent: "center",backgroundColor: "rgb(255, 95, 95, 0.5)"}}>{P.slot}</div>
 
-                    <div className="right" style={{width: "50%", borderRadius: "5px", border: "solid 2px rgb(0, 170, 41)", margin: "2px", backgroundColor: "rgb(95, 255, 134, 0.5)"}}>
-                      {position === P.slot? (Jugador): ""}
+                    <div className="right" style={{width: "50%", borderRadius: "5px", border: "solid 2px rgb(0, 170, 41)", margin: "2px", display:"flex", justifyContent: "center", backgroundColor: "rgb(95, 255, 134, 0.5)"}}>
+                      {position === P.slot? (Jugador): P.slot}
             </div>
         </div>))
         )}
-</div>
+</div>*/}
+  </>
+  
+  
 )
 }
 
@@ -219,17 +242,17 @@ return(
           ( P.side === "left" ?
             (
                 <div key={P.slot} style={{display: "flex", marginBottom: "5px", marginTop: "5px", width: "90%", height:"200px",}}>
-                      <div className="left" style={{width: "50%", borderRadius: "5px", border: "solid 2px rgb(0, 170, 41)", margin: "2px", backgroundColor: "rgb(95, 255, 134, 0.5)"}}>
+                      <div className="left" style={{width: "50%", borderRadius: "5px", border: "solid 2px rgb(0, 170, 41)", margin: "2px", display:"flex", justifyContent: "center", backgroundColor: "rgb(95, 255, 134, 0.5)"}}>
                           {position === P.slot? (Jugador): ""}
                       </div>
-                      <div className="right" style={{width: "50%", borderRadius: "5px", border: "solid 2px rgb(170, 0, 0 )", margin: "2px", backgroundColor: "rgb(255, 95, 95, 0.5)"}}></div>
+                      <div className="right" style={{width: "50%", borderRadius: "5px", border: "solid 2px rgb(170, 0, 0 )", margin: "2px", display:"flex", justifyContent: "center", backgroundColor: "rgb(255, 95, 95, 0.5)"}}></div>
                   </div>
           )
           : ( <div key={P.slot} style={{display: "flex", marginBottom: "5px", marginTop: "5px", width: "90%", height:"200px",}}>
 
-                      <div className="left" style={{width: "50%", borderRadius: "5px", border: "solid 2px rgb(170, 0, 0 )", margin: "2px",backgroundColor: "rgb(255, 95, 95, 0.5)"}}></div>
+                      <div className="left" style={{width: "50%", borderRadius: "5px", border: "solid 2px rgb(170, 0, 0 )", margin: "2px", display:"flex", justifyContent: "center",backgroundColor: "rgb(255, 95, 95, 0.5)"}}></div>
 
-                      <div className="right" style={{width: "50%", borderRadius: "5px", border: "solid 2px rgb(0, 170, 41)", margin: "2px", backgroundColor: "rgb(95, 255, 134, 0.5)"}}>
+                      <div className="right" style={{width: "50%", borderRadius: "5px", border: "solid 2px rgb(0, 170, 41)", margin: "2px", display:"flex", justifyContent: "center", backgroundColor: "rgb(95, 255, 134, 0.5)"}}>
                         {position === P.slot? (Jugador): ""}
               </div>
           </div>))
@@ -255,4 +278,4 @@ return(
    
     /*
    */
-export default RaceTrack;
+export default Track;
