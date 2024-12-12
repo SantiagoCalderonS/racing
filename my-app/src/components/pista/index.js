@@ -12,6 +12,11 @@ import useScreenSize from "@/hooks/windowSize"
 
 import Field from "./components/field";
 
+import Numeros from "@/hooks/numeros";
+
+import corazon from "@/utils/corazon.png"
+import roto from "@/utils/roto.png"
+
 const Track = () => {//pasar id del server, numero de casillas
   
   //estado de Active, que hace referencia a que la "carrera" esta activa
@@ -38,7 +43,10 @@ const [length, setLength] = useState(0)
 
 const [crash, setCrash]= useState(false)
 
+const [health, setHealth] = useState(0)
+
 const init = ()=>{
+  setHealth(3)
   const track = randomRaceTrack(length)
   setPista(track)
   setSite({start: track.length - 3, end: track.length})
@@ -49,6 +57,15 @@ useEffect(()=>{
  crash ? setTimeout(()=>{setCrash(false)},1000) : ""
 },[crash])
 
+useEffect(()=>{ 
+  if(health===0 && Active){
+    console.log("muerto")
+    setPosition(pista.length-1)
+    setSite({start: pista.length - 3, end: pista.length});
+    setHealth(3)
+  }
+ },
+ [health])
 
 const handlerPosition = (event) => {//poner un modal que pida hundir los botones para asegurar que la persona se podra mover   
   if( position === 0){
@@ -61,6 +78,9 @@ const handlerPosition = (event) => {//poner un modal que pida hundir los botones
               !site.start? "" : setSite({start:site.start-1, end: site.end-1})//si ya esta al final no seguir avanzando
               setPosition(position-1)
             }else{
+
+              let heart = health
+              setHealth(heart-1)
               setCrash(true)
               /*setPosition(pista.length-1)
               setSite({start: pista.length - 3, end: pista.length})*/
@@ -72,6 +92,8 @@ const handlerPosition = (event) => {//poner un modal que pida hundir los botones
             !site.start? "" : setSite({start:site.start-1, end: site.end-1})//si ya esta al final no seguir avanzando
             setPosition(position-1)
           }else{
+            let heart = health
+              setHealth(heart-1)
             setCrash(true)
             /*setPosition(pista.length-1)
             setSite({start: pista.length - 3, end: pista.length})*/
@@ -81,6 +103,8 @@ const handlerPosition = (event) => {//poner un modal que pida hundir los botones
             
         }
     
+        //deadTree quitara vida, la roca te aturde, la vida al llegar a 0 te manda al inicio 
+
 }
 
 const dimensiones= useScreenSize()
@@ -92,7 +116,7 @@ useEffect(()=>{
 const handlerStart = (event) => {
   setTimeout(() =>{
     length? setAct(true): ""
-  }, 3000)
+  }, 1000)
 
 }
 
@@ -120,6 +144,7 @@ return(
     tabIndex={0} 
     className="pista" 
     onKeyDown={(event) => !crash ? setTimeout(() =>{handlerPosition(event)}, 100): ""}>
+      <div style={{ position: "absolute",display: "flex"}}><Image alt={"corazon"} src={!crash?corazon.src : roto.src} width={50} height={50}/><Numeros count={health}/></div>
   <Field crash={crash} dimensiones={dimensiones} pista={pista} position={position} site={site}/>
   </div>
 )}
