@@ -6,9 +6,129 @@ import Image from "next/image";
 
 import Player from "@/utils/slime.gif"
 
-import { randomRaceTrack } from "./components/RaceCreator";
+import { randomRaceTrack } from "../../hooks/RaceCreator";
 
 import useScreenSize from "@/hooks/windowSize"
+
+import Field from "./components/field";
+
+const Track = () => {//pasar id del server, numero de casillas
+  
+  //estado de Active, que hace referencia a que la "carrera" esta activa
+  //una funcion que active el estado y un boton
+
+ /* const pista = [
+    {slot : 0, side: "right"},
+    {slot : 1, side: "right"}, 
+    {slot : 2, side: "left"}, 
+    {slot : 3, side: "left"}, 
+    {slot : 4, side: "left"}, 
+    {slot : 5, side: "right"},
+    {slot : 6, side: "left"},
+]*/
+
+const [Active, setAct] = useState(false)
+
+const [pista, setPista] = useState([])
+
+const [site, setSite] = useState({start: 0, end: 0 }) //esta en undefined por lo que no se renderiza
+const [position, setPosition] = useState(0)
+
+const [length, setLength] = useState(0)
+
+const [crash, setCrash]= useState(false)
+
+const init = ()=>{
+  const track = randomRaceTrack(length)
+  setPista(track)
+  setSite({start: track.length - 3, end: track.length})
+  setPosition(track.length-1)
+}
+
+useEffect(()=>{ 
+ crash ? setTimeout(()=>{setCrash(false)},1000) : ""
+},[crash])
+
+
+const handlerPosition = (event) => {//poner un modal que pida hundir los botones para asegurar que la persona se podra mover   
+  if( position === 0){
+    setAct(false)
+    setPista([])
+     //setPosition(pista.length-1)
+     //setSite({start: pista.length - 3, end: pista.length})
+  } else if(event.key === 'ArrowLeft'){
+            if(position > 0 && pista[position-1].side === "left"){
+              !site.start? "" : setSite({start:site.start-1, end: site.end-1})//si ya esta al final no seguir avanzando
+              setPosition(position-1)
+            }else{
+              setCrash(true)
+              /*setPosition(pista.length-1)
+              setSite({start: pista.length - 3, end: pista.length})*/
+              //aqui choca
+           }
+            return
+        }else{
+          if(position > 0 && pista[position-1].side === "right"){
+            !site.start? "" : setSite({start:site.start-1, end: site.end-1})//si ya esta al final no seguir avanzando
+            setPosition(position-1)
+          }else{
+            setCrash(true)
+            /*setPosition(pista.length-1)
+            setSite({start: pista.length - 3, end: pista.length})*/
+            //aqui choca
+         }
+          return
+            
+        }
+    
+}
+
+const dimensiones= useScreenSize()
+
+useEffect(()=>{
+  init()
+},[Active])
+
+const handlerStart = (event) => {
+  setTimeout(() =>{
+    length? setAct(true): ""
+  }, 3000)
+
+}
+
+
+
+const handlerLength = (event) => {
+  setLength(event.target.value)
+  }
+
+return(
+  <>
+  
+  { !Active ?(
+    <div>
+      <select value={length} onChange={(event)=>{handlerLength(event)}}>
+      <option value={20}>trote</option>
+      <option value={50}>persecusion</option>
+      <option value={70}>maratón</option>
+    </select>
+  <button onClick={handlerStart} style={{ width: "200px", height: "100px", backgroundColor: "white", border : "solid 2px black", borderRadius:"5px"}}>comenzar</button>
+  </div>
+  ): (
+    <div style={{ display: "flex", justifyContent: "center", minHeight:  `${dimensiones.height}px`, overflow: "hidden",
+    minWidth: `100%`, backgroundColor: "white" }} 
+    tabIndex={0} 
+    className="pista" 
+    onKeyDown={(event) => !crash ? setTimeout(() =>{handlerPosition(event)}, 100): ""}>
+  <Field crash={crash} dimensiones={dimensiones} pista={pista} position={position} site={site}/>
+  </div>
+)}
+  </>
+  
+  
+)
+}
+
 /*const RaceTrack = () => {
     
   const [pista, setP ]= useState([
@@ -102,123 +222,6 @@ setPosition(position-1)
     </div>
     )
 }*/
-
-import Field from "./components/field";
-
-const Track = () => {//pasar id del server, numero de casillas
-  
-  //estado de Active, que hace referencia a que la "carrera" esta activa
-  //una funcion que active el estado y un boton
-
- /* const pista = [
-    {slot : 0, side: "right"},
-    {slot : 1, side: "right"}, 
-    {slot : 2, side: "left"}, 
-    {slot : 3, side: "left"}, 
-    {slot : 4, side: "left"}, 
-    {slot : 5, side: "right"},
-    {slot : 6, side: "left"},
-]*/
-
-const [Active, setAct] = useState(false)
-
-const [pista, setPista] = useState([])
-
-const [site, setSite] = useState({start: 0, end: 0 }) //esta en undefined por lo que no se renderiza
-const [position, setPosition] = useState(0)
-
-const [length, setLength] = useState(0)
-
-const [crash, setCrash]= useState(false)
-
-const init = ()=>{
-  const track = randomRaceTrack(length)
-  setPista(track)
-  setSite({start: track.length - 3, end: track.length})
-  setPosition(track.length-1)
-}
-
-useEffect(()=>{
- crash ? setTimeout(()=>{setCrash(false)},700) : ""
-},[crash])
-const handlerPosition = (event) => {
-  
-  if( position === 0){
-    setAct(false)
-    setPista([])
-     //setPosition(pista.length-1)
-     //setSite({start: pista.length - 3, end: pista.length})
-  } else if(event.key === 'ArrowLeft'){
-            if(position > 0 && pista[position-1].side === "left"){
-              !site.start? "" : setSite({start:site.start-1, end: site.end-1})//si ya esta al final no seguir avanzando
-              setPosition(position-1)
-            }else{
-              setCrash(true)
-              /*setPosition(pista.length-1)
-              setSite({start: pista.length - 3, end: pista.length})*/
-              //aqui choca
-           }
-            return
-        }else{
-          if(position > 0 && pista[position-1].side === "right"){
-            !site.start? "" : setSite({start:site.start-1, end: site.end-1})//si ya esta al final no seguir avanzando
-            setPosition(position-1)
-          }else{
-            setCrash(true)
-            /*setPosition(pista.length-1)
-            setSite({start: pista.length - 3, end: pista.length})*/
-            //aqui choca
-         }
-          return
-            
-        }
-    
-}
-
-const dimensiones= useScreenSize()
-
-useEffect(()=>{
-  init()
-},[Active])
-
-const handlerStart = (event) => {
-  setTimeout(() =>{
-    length? setAct(true): ""
-  }, 3000)
-
-}
-
-
-
-const handlerLength = (event) => {
-  console.log(event.target.value)
-  setLength(event.target.value)
-  }
-
-return(
-  <>
-  
-  { !Active ?(
-    <div>
-      <select value={length} onChange={(event)=>{handlerLength(event)}}>
-      <option value={2}>trote</option>
-      <option value={5}>persecusion</option>
-      <option value={7}>maratón</option>
-    </select>
-  <button onClick={handlerStart} style={{ width: "200px", height: "100px", backgroundColor: "white", border : "solid 2px black", borderRadius:"5px"}}>comenzar</button>
-  </div>
-  ): (
-    <div style={{ minHeight:  `${dimensiones.height*0.95}px`, overflow: "hidden", width: `${dimensiones.width*0.30}px`, 
-    minWidth: "500px", backgroundColor: "white" }} tabIndex={0} className="pista" 
-    onKeyDown={(event) => !crash ? setTimeout(() =>{handlerPosition(event)}, 100): ""}>
-  <Field dimensiones={dimensiones} pista={pista} position={position} site={site}/>
-  </div>
-)}
-  </>
-  
-  
-)
-}
 /*<div style={{ minHeight:  `${dimensiones.height*0.95}px`, overflow: "hidden", width: `${dimensiones.width*0.30}px`, minWidth: "500px", backgroundColor: "white" }} tabIndex={0} className="pista" onKeyDown={(event) => setTimeout(() =>{handlerPosition(event)}, 100)}>
         {pista?.slice(site.start, site.end).map((P)=>
         ( P.side === "left" ?
