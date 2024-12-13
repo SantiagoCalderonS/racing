@@ -87,7 +87,7 @@ const handlerPosition = (event) => {//poner un modal que pida hundir los botones
               //aqui choca
            }
             return
-        }else{
+        } else if(event.key === 'ArrowRight'){
           if(position > 0 && pista[position-1].side === "right"){
             !site.start? "" : setSite({start:site.start-1, end: site.end-1})//si ya esta al final no seguir avanzando
             setPosition(position-1)
