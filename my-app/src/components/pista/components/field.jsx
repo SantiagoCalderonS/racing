@@ -31,6 +31,13 @@ const Field = ({dimensiones, pista, position, site, crash}) => {
 
     const Jugador = (<Image alt="slime" width= {dimensiones.width*0.30*0.4}  height= {dimensiones.height*0.95*0.3} src={!crash? Player : knocked}></Image>)
 
+     //const Jugador = (<Image style={crash?{position: "absolute", bottom: "9%"}:{position: "absolute", bottom: "14%"}} alt="slime" width= {dimensiones.width*0.30*0.4}  height= {dimensiones.height*0.95*0.3} src={!crash? Player : knocked}></Image>)  
+    //const Jugador = (<Image style={crash?{position: "absolute", bottom: "9%"}:{position: "absolute", bottom: "14%"}} alt="slime" width= {dimensiones.width*0.30*0.5}  height= {dimensiones.height*0.95*0.4} src={!crash? Player : knocked}></Image>)  
+    
+
+    //poner dimensiones estandar y cambiar el tamaño de la pantalla dependiendo de la ventana, que sea estatico en lugar de cambiar con la pantalla
+
+
     return(
         <div style={{ maxHeight:  `${dimensiones.height*0.95}px`, overflow: "hidden", width: `${dimensiones.width*0.30}px`, 
         minWidth: "500px", backgroundColor: "grey", margin: "auto" }} >

@@ -220,7 +220,7 @@ return(
    onKeyDown={(event) => !crash ? setTimeout(() =>{handlerPosition(event)}, 100): ""}>
   
   { !Active ?(
-    <div>
+    <div style={{margin: "auto"}}>
       <select value={length} onChange={(event)=>{handlerLength(event)}}>
       <option value={20}>Paseo</option>
       <option value={50}>persecusion</option>
