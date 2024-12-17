@@ -7,6 +7,9 @@ import Header from "../header";
 import Link from "next/link";
 
 const HomePage = () => {
+
+  
+
     return(
       <div style={{display: "flex", width: "100vw", height: "100vh" }}>
           <Header/>
