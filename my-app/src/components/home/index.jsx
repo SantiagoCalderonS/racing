@@ -8,7 +8,9 @@ import Link from "next/link";
 
 const HomePage = () => {
 
-  
+  useEffect(()=> {
+    fetch("/api/race").then((response)=> {return response.json()}).then((res)=> {console.log(res)})
+  },[])
 
     return(
       <div style={{display: "flex", width: "100vw", height: "100vh" }}>
