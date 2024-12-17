@@ -115,7 +115,8 @@ const handlerPosition = (event) => {
         }
     
         //deadTree quitara vida, la roca te aturde, la vida al llegar a 0 te manda al inicio 
-
+/**    1- las casillas tendran cada una una propiedad llamada "pena" (un string), que funcionara como condicion de lo que hara la funcion de handler position dentro de los if
+        2- hacer las funciones aparte para modularizar y usar un swicth para eso? */
 }
 
 const dimensiones= useScreenSize()
