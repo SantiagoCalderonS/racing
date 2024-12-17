@@ -17,6 +17,7 @@ import Numeros from "@/hooks/numeros";
 import corazon from "@/utils/corazon.png"
 import roto from "@/utils/roto.png"
 
+
 const Track = () => {//pasar id del server, numero de casillas
   
   //redux
