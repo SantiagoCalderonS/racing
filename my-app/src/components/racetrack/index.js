@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 import Image from "next/image";
 
@@ -8,6 +8,18 @@ import Track from "../pista";
 import Header from "../header";
 
 const RaceTrack = () => {
+
+  
+/*const [ready, isReady]= useState(false)
+
+const func = (value) => {//redux
+  isReady(value)
+}
+
+useEffect(() => {
+ready? console.log("ready"):""
+},[ready])*/
+
     return(
       <div style={{display: "flex", width: "100vw", height: "100vh" }}>
           <Header/>

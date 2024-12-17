@@ -1,6 +1,6 @@
 "use client"
 
-import { use, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 
 import Image from "next/image";
 
@@ -19,6 +19,11 @@ import roto from "@/utils/roto.png"
 
 const Track = () => {//pasar id del server, numero de casillas
   
+  //redux
+
+  /*{func, ready} useEffect(() => {
+    func(true);
+  }, [func]); */
   //estado de Active, que hace referencia a que la "carrera" esta activa
   //una funcion que active el estado y un boton
 
@@ -45,12 +50,17 @@ const [crash, setCrash]= useState(false)
 
 const [health, setHealth] = useState(0)
 
+const [heat, setHeah] = useState(3)
+
+
 const init = ()=>{
+ setHeah(283)
   setHealth(3)
   const track = randomRaceTrack(length)
-  setPista(track)
-  setSite({start: track.length - 3, end: track.length})
   setPosition(track.length-1)
+  setPista(track)
+  setSite({start: track.length - 3, end: track.length}) 
+  console.log("init")
 }
 
 useEffect(()=>{ 
@@ -67,7 +77,8 @@ useEffect(()=>{
  },
  [health])
 
-const handlerPosition = (event) => {//poner un modal que pida hundir los botones para asegurar que la persona se podra mover   
+const handlerPosition = (event) => {
+  console.log(event.key, position)//poner un modal que pida hundir los botones para asegurar que la persona se podra mover   
   if( position === 0){
     setAct(false)
     setPista([])
@@ -104,51 +115,131 @@ const handlerPosition = (event) => {//poner un modal que pida hundir los botones
         }
     
         //deadTree quitara vida, la roca te aturde, la vida al llegar a 0 te manda al inicio 
-
+/**    1- las casillas tendran cada una una propiedad llamada "pena" (un string), que funcionara como condicion de lo que hara la funcion de handler position dentro de los if
+        2- hacer las funciones aparte para modularizar y usar un swicth para eso? */
 }
 
 const dimensiones= useScreenSize()
 
 useEffect(()=>{
-  init()
+  
+  Active? init(): ""
 },[Active])
 
 const handlerStart = (event) => {
+  console.log("activate")
   setTimeout(() =>{
     length? setAct(true): ""
   }, 1000)
 
 }
-
-
+  
 
 const handlerLength = (event) => {
   setLength(event.target.value)
   }
 
+  /*useEffect(() => { //esto se queda desactualizado con relacion a los estados locales
+    const handleKeyDown = (event) => {
+      if (!crash) {
+        console.log(heat)//en otra funcion este estado se setea, pero el cambio no es visible aquí
+        //handlerPosition(event);
+      }
+    };
+  
+     document.addEventListener('keydown', handleKeyDown)
+  
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);*/
+
+  //PONER UN POP-UP PARA QUE SE MANTENGA INICIADO
+  
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const handleBlur = () => {
+      if (containerRef.current) {
+        containerRef.current.focus();
+      }
+    };
+  
+    document.addEventListener('blur', handleBlur, true);
+    return () => document.removeEventListener('blur', handleBlur, true);
+  }, []);
+
+  const focusElement = () => {
+    if (containerRef.current) {
+      containerRef.current.focus();
+    }
+  };
+
+  useEffect(() => {
+    focusElement()
+  },[])
+
+  /*
+  const [showPopup, setShowPopup] = useState(true);
+
+return (
+  <div>
+    {showPopup && (
+      <div>
+        <h2>Presione Enter para comenzar</h2>
+        <button onClick={() => setShowPopup(false)}>Comenzar</button>
+      </div>
+    )}
+    {!showPopup && (
+      <div>
+        {/* Tu contenido principal /}
+        </div>
+      )}
+    </div>
+  );
+  5. Automatizar el inicio
+  Para automatizar el inicio sin necesidad de interacción manual, puedes usar un timeout:
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowPopup(false);
+      if (componentRef.current) {
+        componentRef.current.focus();
+      }
+    }, 3000); // Espera 3 segundos antes de comenzar automáticamente
+  
+    return () => clearTimeout(timer);
+  }, []);
+  */
+  
+  //poner un pop-up que pida interaccion o encontrar la forma de hacer que sea automatico 
+
+  //ARREGLAR ESTILOS Y LOGICA DE MOVIMIENTO "HandlerPosition"
 return(
-  <>
+  <div style={{ display: "flex", justifyContent: "center", minHeight:  `${dimensiones.height}px`, overflow: "hidden",
+    minWidth: `100%`, backgroundColor: "white" }} ref={containerRef} tabIndex={0} 
+   onKeyDown={(event) => !crash ? setTimeout(() =>{handlerPosition(event)}, 100): ""}>
   
   { !Active ?(
-    <div>
+    <div style={{margin: "auto"}}>
       <select value={length} onChange={(event)=>{handlerLength(event)}}>
-      <option value={20}>trote</option>
+      <option value={20}>Paseo</option>
       <option value={50}>persecusion</option>
       <option value={70}>maratón</option>
     </select>
   <button onClick={handlerStart} style={{ width: "200px", height: "100px", backgroundColor: "white", border : "solid 2px black", borderRadius:"5px"}}>comenzar</button>
   </div>
   ): (
-    <div style={{ display: "flex", justifyContent: "center", minHeight:  `${dimensiones.height}px`, overflow: "hidden",
-    minWidth: `100%`, backgroundColor: "white" }} 
-    tabIndex={0} 
-    className="pista" 
-    onKeyDown={(event) => !crash ? setTimeout(() =>{handlerPosition(event)}, 100): ""}>
+    <div 
+    
+    className="pista"
+    
+   >
       <div style={{ position: "absolute",display: "flex"}}><Image alt={"corazon"} src={!crash?corazon.src : roto.src} width={50} height={50}/><Numeros count={health}/></div>
   <Field crash={crash} dimensiones={dimensiones} pista={pista} position={position} site={site}/>
   </div>
 )}
-  </>
+  </div>
   
   
 )
