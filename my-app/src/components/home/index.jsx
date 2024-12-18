@@ -6,18 +6,26 @@ import Header from "../header";
 
 import Link from "next/link";
 
+
 const HomePage = () => {
+  
+  const [partida, setPartida] = useState("")
 
-  useEffect(()=> {
-    fetch("/api/race").then((response)=> {return response.json()}).then((res)=> {console.log(res)})
-  },[])
-
+  /*
+  unirse a partida
+  crear partida
+  */
     return(
       <div style={{display: "flex", width: "100vw", height: "100vh" }}>
           <Header/>
       <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center",
         alignItems: "center", backgroundColor: "grey" }}>
-          <Link href={"/racetrack/1"}><button style={{ width: "200px", height: "100px", backgroundColor: "white", border : "solid 2px black", borderRadius:"5px"}}>Empezarar carrera</button></Link>
+           <div>
+           <h1>crear</h1>
+            <input onChange={(event)=>{setPartida(event.target.value)}} type="text"/>
+            </div>
+           { partida !== ""?<Link href={`/racetrack/${partida}`}><button style={{ width: "200px", height: "100px", backgroundColor: "white", border : "solid 2px black", borderRadius:"5px"}}>Empezarar carrera</button></Link>: ""}
+         
           </div>
           </div>
     )

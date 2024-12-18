@@ -7,8 +7,23 @@ import Image from "next/image";
 import Track from "../pista";
 import Header from "../header";
 
-const RaceTrack = () => {
+import { clientPusher } from "@/pusher";
 
+const RaceTrack = ({id}) => {
+
+  
+
+  useEffect(()=> {
+    fetch(`/api/race/${id}`).then((response)=> {return response.json()}).then((res)=> {console.log(res)})
+    
+    clientPusher.subscribe(`home-${id}`)
+
+    clientPusher.bind("app", (data)=>{console.log(data)} )
+
+    return (()=> {
+      clientPusher.unsubscribe(`home-${id}`)
+    })
+  },[])
   
 /*const [ready, isReady]= useState(false)
 
