@@ -17,8 +17,8 @@ const RaceTrack = ({id}) => {
     fetch(`/api/race/${id}`).then((response)=> {return response.json()}).then((res)=> {console.log(res)})
     
     clientPusher.subscribe(`home-${id}`)
-
     clientPusher.bind("app", (data)=>{console.log(data)} )
+
 
     return (()=> {
       clientPusher.unsubscribe(`home-${id}`)
@@ -40,7 +40,7 @@ ready? console.log("ready"):""
           <Header/>
       <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center",
         alignItems: "center", backgroundColor: "grey" }}>
-          <Track/>
+          <Track id={id}/>
           </div>
           </div>
     )
