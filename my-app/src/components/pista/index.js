@@ -17,8 +17,10 @@ import Numeros from "@/hooks/numeros";
 import corazon from "@/utils/corazon.png"
 import roto from "@/utils/roto.png"
 
+import { clientPusher } from "@/pusher";
 
-const Track = () => {//pasar id del server, numero de casillas
+
+const Track = ({id}) => {//pasar id del server, numero de casillas
   
   //redux
 
@@ -54,15 +56,18 @@ const [health, setHealth] = useState(0)
 const [heat, setHeah] = useState(3)
 
 
-const init = ()=>{
- setHeah(283)
+const init = ()=>{//funcion que da inicio a la "carrera", debe activarse para todos en la sesion
+ //setHeah(283)
   setHealth(3)
-  const track = randomRaceTrack(length)
+  fetch(`/api/race/${id}?length=${length}`, {method: "PUT"}).then((response)=> {return response.json()}).then((res)=> {console.log(res)})
+  const track = randomRaceTrack(length) //poner en el router una funcion que guarde esto y lo mande a todos por pusher
   setPosition(track.length-1)
   setPista(track)
   setSite({start: track.length - 3, end: track.length}) 
   console.log("init")
 }
+
+//clientPusher.bind("apps", (data)=>{console.log("apps", data)} )//está escuchando todo el rato, al triggerear  el evento se acitva y ejecuta la funcion
 
 useEffect(()=>{ 
  crash ? setTimeout(()=>{setCrash(false)},1000) : ""
@@ -79,7 +84,7 @@ useEffect(()=>{
  [health])
 
 const handlerPosition = (event) => {
-  console.log(event.key, position)//poner un modal que pida hundir los botones para asegurar que la persona se podra mover   
+  //console.log(event.key, position)//poner un modal que pida hundir los botones para asegurar que la persona se podra mover   
   if( position === 0){
     setAct(false)
     setPista([])
