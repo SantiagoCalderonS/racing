@@ -1,7 +1,10 @@
 import RaceTrack from "@/components/racetrack/index";
 
-export default function Home() {
+export default async function Home({params}) {
+
+  const {id} = await params
+
   return (
-    <RaceTrack/>
+    <RaceTrack id={id}/>
   );
 }
