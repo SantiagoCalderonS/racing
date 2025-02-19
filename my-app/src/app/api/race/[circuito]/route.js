@@ -37,12 +37,11 @@ export async function PUT (req, {params}){
     const length = searchParams.get("length");
 
     const track = randomRaceTrack(length)
-    //console.log(track, length, circuito)
     
     const sendMessage = async () => {
         try {
             pistas.map((P)=> P.servidor == circuito ? P.carriles = track: "")
-            ServidorPusher.trigger(`home-${circuito}`, "app", {msg: pistas})
+            ServidorPusher.trigger(`home-${circuito}`, "race", {track})
         } catch (error) {
             throw new Error(error.message)
         }
@@ -52,6 +51,28 @@ export async function PUT (req, {params}){
 
 return NextResponse.json({msg: "router"},{status: 200} )
 }
+
+export async function POST (req, {params}){
+
+    const {circuito} = await params
+
+    const searchParams = req.nextUrl.searchParams;
+    
+    
+    const sendMessage = async () => {
+        try {
+           // pistas.map((P)=> P.servidor == circuito ? P.carriles = track: "")
+            ServidorPusher.trigger(`home-${circuito}`, "raceEND", {msg: "end"})
+        } catch (error) {
+            throw new Error(error.message)
+        }
+    }
+
+    sendMessage()
+
+return NextResponse.json({msg: "router"},{status: 200} )
+}
+
 
 
 //un servidor o algo que guarde temporalmente las partidas con las claves especificas y el array de la pista, al terminar la carrera que se borre
