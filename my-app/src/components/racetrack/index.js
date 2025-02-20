@@ -37,7 +37,7 @@ ready? console.log("ready"):""
 
     return(
       <div style={{display: "flex", width: "100vw", height: "100vh" }}>
-          <Header/>
+          {/*<Header/>*/}
       <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center",
         alignItems: "center", backgroundColor: "grey" }}>
           <Track id={id}/>
