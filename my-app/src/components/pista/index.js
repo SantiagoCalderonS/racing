@@ -259,7 +259,7 @@ return(
     className="pista"
     
    >
-      <div style={{ position: "absolute",display: "flex"}}><Image alt={"corazon"} src={!crash?corazon.src : roto.src} width={50} height={50}/><Numeros count={health}/></div>
+      <div style={{ position: "absolute",display: "flex", zIndex: 1000}}><Image alt={"corazon"} src={!crash?corazon.src : roto.src} width={50} height={50}/><Numeros count={health}/></div>
   <Field crash={crash} dimensiones={dimensiones} pista={pista} position={position} site={site}/>
   </div>
 )}
