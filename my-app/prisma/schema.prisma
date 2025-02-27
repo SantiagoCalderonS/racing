@@ -11,17 +11,20 @@ datasource db {
 }
 
 
-model User {
+model Servidor {
   id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
+  name  String  @unique
+  clave String  @unique
+  contraseña String  @unique
+  pista String?
+  active Boolean @default(false)
+  jugadores Player[]
 }
 
-model Post {
+model Player {
   id        Int     @id @default(autoincrement())
-  content   String?
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
-  authorId  Int
+  name   String?
+  victorias  Int @default(0)
+  server    Servidor    @relation(fields: [serverId], references: [id])
+  serverId  Int
 }
