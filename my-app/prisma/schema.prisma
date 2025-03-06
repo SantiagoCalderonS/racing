@@ -9,3 +9,22 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+
+model Servidor {
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+  clave String  @unique
+  contraseña String  @unique
+  pista String?
+  active Boolean @default(false)
+  jugadores Player[]
+}
+
+model Player {
+  id        Int     @id @default(autoincrement())
+  name   String?
+  victorias  Int @default(0)
+  server    Servidor    @relation(fields: [serverId], references: [id])
+  serverId  Int
+}
