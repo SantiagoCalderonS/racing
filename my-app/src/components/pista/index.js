@@ -20,7 +20,7 @@ import roto from "@/utils/roto.png"
 import { clientPusher } from "@/pusher";
 
 
-const Track = ({id}) => {//pasar id del server, numero de casillas
+const Track = ({partida, contraseña}) => {//pasar id del server, numero de casillas
   
   //redux
 
@@ -40,6 +40,7 @@ const Track = ({id}) => {//pasar id del server, numero de casillas
     {slot : 6, side: "left"},
 ]*/
 
+// ESTADOS LOCALES_____________________________________________________________________________________________________________________________________________________________
 const [Active, setAct] = useState(false)
 
 const [pista, setPista] = useState([])
@@ -54,11 +55,11 @@ const [crash, setCrash]= useState(false)
 const [health, setHealth] = useState(0)
 
 const [heat, setHeah] = useState(3)
-
+//__________________________________________________________________________________________________________________________________________________________________________________________
 
 const init = ()=>{//funcion que da inicio a la "carrera", debe activarse para todos en la sesion
  //setHeah(283)
- fetch(`/api/race/${id}?length=${length}`, {method: "PUT"}).then((response)=> {return response.json()}).then((res)=> {console.log("push")})
+ fetch(`/api/race?length=${length}&partida=${partida}&contraseña=${contraseña}`, {method: "PUT"}).then((response)=> {return response.json()}).then((res)=> {console.log("push")})
   /*setHealth(3)
   const track = randomRaceTrack(length) //poner en el router una funcion que guarde esto y lo mande a todos por pusher
   setPosition(track.length-1)
@@ -67,7 +68,7 @@ const init = ()=>{//funcion que da inicio a la "carrera", debe activarse para to
   console.log("init")*/
 }
 
-clientPusher.bind("race", (data)=>{
+clientPusher.bind("race", (data)=>{ //EVENTO DE INICIO DE CARRERA
   console.log(data.track);
   setHealth(3)
   //const track = randomRaceTrack(length) //poner en el router una funcion que guarde esto y lo mande a todos por pusher
@@ -79,20 +80,19 @@ clientPusher.bind("race", (data)=>{
 }
 )//está escuchando todo el rato, al triggerear  el evento se acitva y ejecuta la funcion
 
-clientPusher.bind("raceEND", (data)=>{
+clientPusher.bind("raceEND", (data)=>{// EVENTO DE FINALIZACION DE CARRERA
   console.log(data);
   setAct(false)
     setPista([])
 }
 )//está escuchando todo el rato, al triggerear  el evento se acitva y ejecuta la funcion
 
-useEffect(()=>{ 
+useEffect(()=>{ //FUNCION DE "COLISION"
  crash ? setTimeout(()=>{setCrash(false)},1000) : ""
 },[crash])
 
-useEffect(()=>{ 
+useEffect(()=>{ //FUNCION DE "RESPAWN" AL LLEGAR A 0 "VIDAS"
   if(health===0 && Active){
-    console.log("muerto")
     setPosition(pista.length-1)
     setSite({start: pista.length - 3, end: pista.length});
     setHealth(3)
@@ -100,10 +100,10 @@ useEffect(()=>{
  },
  [health])
 
-const handlerPosition = (event) => {
+const handlerPosition = (event) => {//FUNCION DE MOVIMIENTO
   //console.log(event.key, position)//poner un modal que pida hundir los botones para asegurar que la persona se podra mover   
   if( position === 0){
-    fetch(`/api/race/${id}`, {method: "POST"})
+    fetch(`/api/race?partida=${partida}&contraseña=${contraseña}`, {method: "DELETE"})
     /*setAct(false)
     setPista([])*/
      //setPosition(pista.length-1)
@@ -143,14 +143,14 @@ const handlerPosition = (event) => {
         2- hacer las funciones aparte para modularizar y usar un swicth para eso? */
 }
 
-const dimensiones= useScreenSize()
+const dimensiones= useScreenSize()// DIMENSIONES DE LA PANTALLA/PESTAÑA EN LA QUE CORRE EL PROGRAMA
 
 /*useEffect(()=>{
   
   Active? init(): ""
 },[Active])*/
 
-const handlerStart = (event) => {
+const handlerStart = (event) => {//CONTADOR PARA INICIAR PARTIDA
   console.log("activate")
   setTimeout(() =>{
     length? init(): "" //length? setAct(true): ""
@@ -159,7 +159,7 @@ const handlerStart = (event) => {
 }
   
 
-const handlerLength = (event) => {
+const handlerLength = (event) => {//CONTIENE LA LONGITUD DE LA "PISTA"
   setLength(event.target.value)
   }
 
@@ -180,6 +180,7 @@ const handlerLength = (event) => {
 
   //PONER UN POP-UP PARA QUE SE MANTENGA INICIADO
   
+  //___SECCION DE FUNCIONES QUE MANTIENE EN ESCUCHA LOS INPUTS DEL TECLADO_______________________________________________________________________________________________________________________________________________________________________________________
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -202,6 +203,7 @@ const handlerLength = (event) => {
   useEffect(() => {
     focusElement()
   },[])
+//__________________________________________________________________________________________________________________________________________________________________________________________
 
   /*
   const [showPopup, setShowPopup] = useState(true);
@@ -239,7 +241,8 @@ return (
   //poner un pop-up que pida interaccion o encontrar la forma de hacer que sea automatico 
 
   //ARREGLAR ESTILOS Y LOGICA DE MOVIMIENTO "HandlerPosition"
-return(
+
+  return(
   <div style={{ display: "flex", justifyContent: "center", minHeight:  `${dimensiones.height}px`, overflow: "hidden",
     minWidth: `100%`, backgroundColor: "white" }} ref={containerRef} tabIndex={0} 
    onKeyDown={(event) => !crash ? setTimeout(() =>{handlerPosition(event)}, 100): ""}>
@@ -268,6 +271,8 @@ return(
   
 )
 }
+
+export default Track;
 
 /*const RaceTrack = () => {
     
@@ -459,7 +464,3 @@ setPosition(position-1)
     </div>
     )
     */
-   
-    /*
-   */
-export default Track;

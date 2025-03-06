@@ -7,20 +7,16 @@ import Header from "../header";
 import Link from "next/link";
 
 
-const HomePage = () => {
-  
-  const [partida, setPartida] = useState("")
-  const [contraseña, setContr] = useState("")
-
+const Entrada = ({partida, contraseña}) => {
+  //tomar los params para obtener partida y contraseña
+  const [nombre, setNombre] = useState("")
+console.log(partida, contraseña)
   /*
-  unirse a partida
-  crear partida
-  la funcion de "crear" debe ser exclusiva de aqui
+  se crea tu jugador para la partida especificada y retorna la info para tener acceso
   */
-
-  const creacionDePista = async () => {
+  const creacionDeUsuarios= async () => {
     try {
-      const response = await fetch(`/api/race?partida=${partida}&contraseña=${contraseña}`, {method: "POST"});
+      const response = await fetch(`/api/jugadores?nombre=${nombre}&partida=${partida}&contraseña=${contraseña}`, {method: "POST"});
 
       if (!response.ok) {
         throw new Error(`Error ${response.status}: ${response.statusText}`);
@@ -34,21 +30,21 @@ const HomePage = () => {
     }
   };
 
+
     return(
       <div style={{display: "flex", width: "100vw", height: "100vh" }}>
           {/*<Header/>*/}
       <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center",
         alignItems: "center", backgroundColor: "grey" }}>
            <div>
-           <h1>crear</h1>
-            <input onChange={(event)=>{setPartida(event.target.value)}} type="text"/>
-            <input onChange={(event)=>{setContr(event.target.value)}} type="text"/>
+           <h1>Poner Nombre</h1>
+            <input onChange={(event)=>{setNombre(event.target.value)}} type="text"/>
             </div>
            {/* partida !== "" && contraseña !== "" ?<Link href={`/racetrack/${partida}/${contraseña}`}><button style={{ width: "200px", height: "100px", backgroundColor: "white", border : "solid 2px black", borderRadius:"5px"}}>Empezarar carrera</button></Link>: ""*/}
-           { partida !== "" && contraseña !== "" ?<button onClick={creacionDePista} style={{ width: "200px", height: "100px", backgroundColor: "white", border : "solid 2px black", borderRadius:"5px"}}>crear</button>: ""}
+           { nombre !== "" ?<button onClick={creacionDeUsuarios} style={{ width: "200px", height: "100px", backgroundColor: "white", border : "solid 2px black", borderRadius:"5px"}}>Entrar</button>: ""}
          
           </div>
           </div>
     )
 }
-export default HomePage;
+export default Entrada;

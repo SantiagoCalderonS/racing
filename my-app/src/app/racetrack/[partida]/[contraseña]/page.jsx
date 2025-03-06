@@ -2,9 +2,9 @@ import RaceTrack from "@/components/racetrack/index";
 
 export default async function Home({params}) {
 
-  const {id} = await params
+  const {partida, contraseña} = await params
 
   return (
-    <RaceTrack id={id}/>
+    <RaceTrack partida={partida} contraseña={contraseña}/>
   );
 }

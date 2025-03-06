@@ -14,17 +14,17 @@ datasource db {
 model Servidor {
   id    Int     @id @default(autoincrement())
   name  String  @unique
-  clave String  @unique
   contraseña String  @unique
   pista String?
-  active Boolean @default(false)
+  active Boolean? @default(false)
   jugadores Player[]
 }
 
 model Player {
   id        Int     @id @default(autoincrement())
   name   String?
-  victorias  Int @default(0)
-  server    Servidor    @relation(fields: [serverId], references: [id])
+  admin   Boolean @default(false)
+  victorias  Int? @default(0)
+  server    Servidor    @relation(fields: [serverId], references: [id],  onDelete: Cascade)
   serverId  Int
 }
