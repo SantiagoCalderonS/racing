@@ -97,7 +97,7 @@ export async function DELETE (req, {params}){
     
     const sendMessage = async () => {
         try {//QUE AL CERRAR EL SERVIDOR EL TRIGGER HAGA SALIR A TODOS LOS PARTICIPANTES CON UN REDIRECT, AL MISMO TIEMPO QUE SE BORRA TODO LO RELACIONADO AL SERVER
-           // pistas.map((P)=> P.servidor == partida ? P.carriles = track: "")
+
             ServidorPusher.trigger(`Servidor-${partida}`, "raceEND", {msg: "end"})
         } catch (error) {
             throw new Error(error.message)
