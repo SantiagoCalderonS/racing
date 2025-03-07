@@ -11,6 +11,7 @@ const HomePage = () => {
   
   const [partida, setPartida] = useState("")
   const [contraseña, setContr] = useState("")
+  const [nombre, setNombre] = useState("")
 
   /*
   unirse a partida
@@ -20,14 +21,14 @@ const HomePage = () => {
 
   const creacionDePista = async () => {
     try {
-      const response = await fetch(`/api/race?partida=${partida}&contraseña=${contraseña}`, {method: "POST"});
+      const response = await fetch(`/api/race?partida=${partida}&contraseña=${contraseña}&nombre=${nombre}`, {method: "POST"});
 
       if (!response.ok) {
         throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
 
       const data = await response.json();
-      console.log(data)
+      sessionStorage.setItem("datos", JSON.stringify(data.jugador))
       window.location.href = `/racetrack/${partida}/${contraseña}`;
     } catch (err) {
       console.log(err)
@@ -43,9 +44,10 @@ const HomePage = () => {
            <h1>crear</h1>
             <input onChange={(event)=>{setPartida(event.target.value)}} type="text"/>
             <input onChange={(event)=>{setContr(event.target.value)}} type="text"/>
+            <input onChange={(event)=>{setNombre(event.target.value)}} type="text"/>
             </div>
            {/* partida !== "" && contraseña !== "" ?<Link href={`/racetrack/${partida}/${contraseña}`}><button style={{ width: "200px", height: "100px", backgroundColor: "white", border : "solid 2px black", borderRadius:"5px"}}>Empezarar carrera</button></Link>: ""*/}
-           { partida !== "" && contraseña !== "" ?<button onClick={creacionDePista} style={{ width: "200px", height: "100px", backgroundColor: "white", border : "solid 2px black", borderRadius:"5px"}}>crear</button>: ""}
+           { partida !== "" && contraseña !== "" && nombre !== "" ?<button onClick={creacionDePista} style={{ width: "200px", height: "100px", backgroundColor: "white", border : "solid 2px black", borderRadius:"5px"}}>crear</button>: ""}
          
           </div>
           </div>

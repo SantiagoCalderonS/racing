@@ -34,18 +34,17 @@ export async function POST (req, {params}){//CREAR UNA PARTIDA
              name: nombre,
              admin : false,
              serverId: server.id
-           },
-        }
-    )}
-console.log(jugador)
-return NextResponse.json({jugador: jugador},{status: 200} )
+           },})
+           console.log(jugador)
+           return NextResponse.json({jugador},{status: 200} )
+        }else{
+            throw new Error
+             }
 
-}else{
+       }else{
     throw new Error
-}
-
-
-    } catch (error) {
+     }
+ } catch (error) {
         return NextResponse.json({msg: "error"},{status: 404} )
     }
     

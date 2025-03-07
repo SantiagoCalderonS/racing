@@ -10,13 +10,25 @@ const prisma = new PrismaClient()
 var pistas=[]
 
 
-export async function GET (req, {params}){//CONECTARSE
+export async function GET (req, {params}){//CONECTARSE/ si no hay partida en base redireccionar a home
 
-    const {partida} = await params
+    try {
+        const searchParams = req.nextUrl.searchParams;
+    const partida = searchParams.get("partida");
+    const contraseña = searchParams.get("contraseña");
 
-    const searchParams = req.nextUrl.searchParams;
+  const buscar = await prisma.servidor.findFirst({
+   where:{name: partida}
+  })
 
-return NextResponse.json({msg: "router"},{status: 200} )
+  if(buscar){
+        return NextResponse.json({msg: ""},{status: 200} )
+        }else{
+            throw new Error
+        }
+    } catch (error) {
+        return NextResponse.json({msg: "error"},{status: 404} )
+    }
 }
 
 
@@ -29,6 +41,7 @@ export async function POST (req, {params}){//CREAR UNA PARTIDA
         const searchParams = req.nextUrl.searchParams;
     const partida = searchParams.get("partida");
     const contraseña = searchParams.get("contraseña");
+    const nombre = searchParams.get("nombre");
 
   console.log(partida, partida)
 
@@ -37,19 +50,26 @@ export async function POST (req, {params}){//CREAR UNA PARTIDA
   })
 
   if(!buscar){
-    await prisma.servidor.create({
+    const nuevoServer = await prisma.servidor.create({
     data: {
       name: partida,
       contraseña: contraseña,
       pista: "",
-    },
-}
-)
+    },})
+    
+    const jugador = await prisma.player.create({
+        data: {
+          name: nombre,
+          admin : true,
+          serverId: nuevoServer.id
+        },})
+        console.log(jugador)
+        return NextResponse.json({jugador},{status: 200} )
 }else{
     throw new Error
 }
 
-return NextResponse.json({msg: "router"},{status: 200} )
+
     } catch (error) {
         return NextResponse.json({msg: "error"},{status: 404} )
     }
@@ -70,7 +90,7 @@ export async function PUT (req, {params}){ //INICIAR
     const sendMessage = async () => {
         try {
             pistas.map((P)=> P.servidor == partida ? P.carriles = track: "")
-            ServidorPusher.trigger(`Servidor-${partida}`, "race", {track})
+            ///ServidorPusher.trigger(`Servidor-${partida}`, "race", {track})
         } catch (error) {
             throw new Error(error.message)
         }
@@ -81,24 +101,42 @@ export async function PUT (req, {params}){ //INICIAR
 return NextResponse.json({msg: "router"},{status: 200} )
 }
 
-export async function DELETE (req, {params}){
+export async function DELETE (req, {params}){//limitar al borrado del server al creador, si no es creador que solo se borre el usuario y lo redireccione a home
 
 
     const searchParams = req.nextUrl.searchParams;
     const partida = searchParams.get("partida");
     const contraseña = searchParams.get("contraseña");
+    const admin = searchParams.get("admin");
+    const serverId = searchParams.get("server");
 
-    const Borrado= await prisma.servidor.delete({
+    const id = Number(admin)
+    const perfil = await prisma.player.findFirst({
+        where: {id: id},
+      })
+      const SERVIDOR = await prisma.servidor.findFirst({
+        where: {name: partida},
+      })
+      if(SERVIDOR.id === perfil.serverId && perfil.admin === true){
+        const Borrado= await prisma.servidor.delete({
         where: {name:partida},
         include: {jugadores: true}
       })
-     
-      console.log(Borrado)
+      console.log("borro todo")
+      }else{
+        const PerfilBorrado= await prisma.player.delete({
+            where: {id:id},
+          })
+          console.log("borro usuario")
+      }
+
     
-    const sendMessage = async () => {
+     //const Borraado= await prisma.servidor.deleteMany({})
+    
+    const sendMessage = async () => {//si quien se sale es el creador: borrar el server, los usuarios y redireccionarlos a home por medio de un trigger
         try {//QUE AL CERRAR EL SERVIDOR EL TRIGGER HAGA SALIR A TODOS LOS PARTICIPANTES CON UN REDIRECT, AL MISMO TIEMPO QUE SE BORRA TODO LO RELACIONADO AL SERVER
 
-            ServidorPusher.trigger(`Servidor-${partida}`, "raceEND", {msg: "end"})
+            //ServidorPusher.trigger(`Servidor-${partida}`, "raceEND", {msg: "end"})
         } catch (error) {
             throw new Error(error.message)
         }
