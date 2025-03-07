@@ -44,7 +44,7 @@ console.log("entrar")
 
     const salir_Y_O_CerrarServer = () => {//funcion para cerrar el perfil del
       // Tu código aquí
-      clientPusher.unsubscribe(`Servidor-${partida}`)
+      //clientPusher.unsubscribe(`Servidor-${partida}`)
       async function name() {
         //
         const admin = JSON.parse(sessionStorage.getItem("datos"))
