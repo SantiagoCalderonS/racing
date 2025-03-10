@@ -38,13 +38,12 @@ const RaceTrack = ({partida, contraseña}) => {
 
 //ES NECESARIO TENER UN ID (QUE COINCIDA CON ALGUNO QUE TENGA RELACIONADO EL SERVER), SI NO SE TIENE SE DEBE CREAR
 console.log("entrar")
-    //clientPusher.subscribe(`Servidor-${partida}`)//EVENTO DE CONEXION AL SERVER
+    clientPusher.subscribe(`Servidor-${partida}`)//EVENTO DE CONEXION AL SERVER
     //clientPusher.bind("app", (data)=>{console.log(data)} )
 
 
     const salir_Y_O_CerrarServer = () => {//funcion para cerrar el perfil del
       // Tu código aquí
-      //clientPusher.unsubscribe(`Servidor-${partida}`)
       async function name() {
         //
         const admin = JSON.parse(sessionStorage.getItem("datos"))
@@ -52,6 +51,7 @@ console.log("entrar")
         await fetch(`/api/race?partida=${partida}&contraseña=${contraseña}&admin=${admin.id}&server=${admin.serverId}`, {method: "DELETE"})
       }
       name()
+      clientPusher.unsubscribe(`Servidor-${partida}`)
       sessionStorage.removeItem("datos")
     };
 
@@ -72,6 +72,8 @@ console.log("entrar")
     }*/
   },[])
 
+
+  clientPusher.bind("ServerDeleted", (data)=>{window.location.href = `/`} )
 
     return(
       <div style={{display: "flex", width: "100vw", height: "100vh" }}>

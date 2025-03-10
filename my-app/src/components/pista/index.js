@@ -103,7 +103,7 @@ useEffect(()=>{ //FUNCION DE "RESPAWN" AL LLEGAR A 0 "VIDAS"
 const handlerPosition = (event) => {//FUNCION DE MOVIMIENTO
   //console.log(event.key, position)//poner un modal que pida hundir los botones para asegurar que la persona se podra mover   
   if( position === 0){
-    fetch(`/api/race?partida=${partida}&contraseña=${contraseña}`, {method: "DELETE"})
+    fetch(`/api/jugadores?partida=${partida}&contraseña=${contraseña}`, {method: "DELETE"})
     /*setAct(false)
     setPista([])*/
      //setPosition(pista.length-1)

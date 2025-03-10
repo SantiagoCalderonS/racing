@@ -86,11 +86,23 @@ export async function PUT (req, {params}){ //INICIAR
     const contraseña = searchParams.get("contraseña");
 
     const track = randomRaceTrack(length)
+    const j = JSON.stringify(track)
+
+    //console.log(JSON.parse(j))
     
     const sendMessage = async () => {
         try {
-            pistas.map((P)=> P.servidor == partida ? P.carriles = track: "")
-            ///ServidorPusher.trigger(`Servidor-${partida}`, "race", {track})
+            //pistas.map((P)=> P.servidor == partida ? P.carriles = track: "")
+            const newPista = await prisma.servidor.update(
+                {
+                  where:{
+                      name: partida//id del torneo
+                  },
+                  data: {pista: j},
+                  
+              }
+               )
+            ServidorPusher.trigger(`Servidor-${partida}`, "race", {track})
         } catch (error) {
             throw new Error(error.message)
         }
@@ -110,6 +122,14 @@ export async function DELETE (req, {params}){//limitar al borrado del server al 
     const admin = searchParams.get("admin");
     const serverId = searchParams.get("server");
 
+    const sendMessage = async () => {//si quien se sale es el creador: borrar el server, los usuarios y redireccionarlos a home por medio de un trigger
+        try {//QUE AL CERRAR EL SERVIDOR EL TRIGGER HAGA SALIR A TODOS LOS PARTICIPANTES CON UN REDIRECT, AL MISMO TIEMPO QUE SE BORRA TODO LO RELACIONADO AL SERVER
+
+            ServidorPusher.trigger(`Servidor-${partida}`, "ServerDeleted", {msg: "end"})
+        } catch (error) {
+            throw new Error(error.message)
+        }
+    }
     const id = Number(admin)
     const perfil = await prisma.player.findFirst({
         where: {id: id},
@@ -123,6 +143,8 @@ export async function DELETE (req, {params}){//limitar al borrado del server al 
         include: {jugadores: true}
       })
       console.log("borro todo")
+      sendMessage()
+
       }else{
         const PerfilBorrado= await prisma.player.delete({
             where: {id:id},
@@ -133,16 +155,9 @@ export async function DELETE (req, {params}){//limitar al borrado del server al 
     
      //const Borraado= await prisma.servidor.deleteMany({})
     
-    const sendMessage = async () => {//si quien se sale es el creador: borrar el server, los usuarios y redireccionarlos a home por medio de un trigger
-        try {//QUE AL CERRAR EL SERVIDOR EL TRIGGER HAGA SALIR A TODOS LOS PARTICIPANTES CON UN REDIRECT, AL MISMO TIEMPO QUE SE BORRA TODO LO RELACIONADO AL SERVER
+    
 
-            //ServidorPusher.trigger(`Servidor-${partida}`, "raceEND", {msg: "end"})
-        } catch (error) {
-            throw new Error(error.message)
-        }
-    }
-
-    //sendMessage()
+    
 
 return NextResponse.json({msg: "router"},{status: 200} )
 }

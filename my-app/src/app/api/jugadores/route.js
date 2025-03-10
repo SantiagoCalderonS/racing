@@ -49,3 +49,27 @@ export async function POST (req, {params}){//CREAR UNA PARTIDA
     }
     
 }
+
+
+export async function DELETE (req, {params}){//limitar al borrado del server al creador, si no es creador que solo se borre el usuario y lo redireccione a home
+
+
+    const searchParams = req.nextUrl.searchParams;
+    const partida = searchParams.get("partida");
+    const contraseña = searchParams.get("contraseña");
+    
+     //const Borraado= await prisma.servidor.deleteMany({})
+    
+    const sendMessage = async () => {//si quien se sale es el creador: borrar el server, los usuarios y redireccionarlos a home por medio de un trigger
+        try {//QUE AL CERRAR EL SERVIDOR EL TRIGGER HAGA SALIR A TODOS LOS PARTICIPANTES CON UN REDIRECT, AL MISMO TIEMPO QUE SE BORRA TODO LO RELACIONADO AL SERVER
+
+            ServidorPusher.trigger(`Servidor-${partida}`, "raceEND", {msg: "end"})
+        } catch (error) {
+            throw new Error(error.message)
+        }
+    }
+
+    sendMessage()
+
+return NextResponse.json({msg: "router"},{status: 200} )
+}
