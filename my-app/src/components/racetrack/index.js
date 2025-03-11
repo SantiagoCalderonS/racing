@@ -10,7 +10,11 @@ import { useSearchParams } from "next/navigation";
 
 import { clientPusher } from "@/pusher";
 
+import Visor from "./components";
+
 const RaceTrack = ({partida, contraseña}) => {
+
+  
 
   useEffect(()=> {
     const revisarSession = () => {
@@ -78,6 +82,11 @@ console.log("entrar")
     return(
       <div style={{display: "flex", width: "100vw", height: "100vh" }}>
           {/*<Header/>*/}
+          <div style={{width: "40%", height: "100%", display: "flex", justifyContent: "center",
+        alignItems: "center", backgroundColor: "grey" }}>
+            <Visor/>
+          </div>
+          
       <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center",
         alignItems: "center", backgroundColor: "grey" }}>
           {/*<button onClick={()=>{fetch(`/api/race?partida=${partida}&contraseña=${contraseña}`, {method: "DELETE"})}}>dddddd</button>*/}

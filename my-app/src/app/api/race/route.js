@@ -64,6 +64,7 @@ export async function POST (req, {params}){//CREAR UNA PARTIDA
           serverId: nuevoServer.id
         },})
         console.log(jugador)
+        ServidorPusher.trigger(`Servidor-${partida}`, "participantes", {data: [{name:jugador.name, porcentaje: "0%"}]})
         return NextResponse.json({jugador},{status: 200} )
 }else{
     throw new Error
@@ -149,6 +150,7 @@ export async function DELETE (req, {params}){//limitar al borrado del server al 
         const PerfilBorrado= await prisma.player.delete({
             where: {id:id},
           })
+          ServidorPusher.trigger(`Servidor-${partida}`, "participantes", {data: {msg:perfil.name}})
           console.log("borro usuario")
       }
 

@@ -55,6 +55,12 @@ const [crash, setCrash]= useState(false)
 const [health, setHealth] = useState(0)
 
 const [heat, setHeah] = useState(3)
+
+const [recorrido, setCorrido] = useState({
+  1:0,
+  2:0,
+  3:0
+})
 //__________________________________________________________________________________________________________________________________________________________________________________________
 
 const init = ()=>{//funcion que da inicio a la "carrera", debe activarse para todos en la sesion
@@ -75,6 +81,7 @@ clientPusher.bind("race", (data)=>{ //EVENTO DE INICIO DE CARRERA
   setPosition(data.track.length-1)
   setPista(data.track)
   setSite({start: data.track.length - 3, end: data.track.length}) 
+  setCorrido({1: Math.floor((data.track.length*3)/10), 2:Math.floor((data.track.length*6)/10), 3: Math.floor((data.track.length*9)/10)})
   setAct(true)
   console.log("init")
 }
@@ -112,8 +119,8 @@ const handlerPosition = (event) => {//FUNCION DE MOVIMIENTO
             if(position > 0 && pista[position-1].side === "left"){
               !site.start? "" : setSite({start:site.start-1, end: site.end-1})//si ya esta al final no seguir avanzando
               setPosition(position-1)
+              //put de las posision
             }else{
-
               let heart = health
               setHealth(heart-1)
               setCrash(true)
@@ -126,6 +133,7 @@ const handlerPosition = (event) => {//FUNCION DE MOVIMIENTO
           if(position > 0 && pista[position-1].side === "right"){
             !site.start? "" : setSite({start:site.start-1, end: site.end-1})//si ya esta al final no seguir avanzando
             setPosition(position-1)
+            //put de las posision
           }else{
             let heart = health
               setHealth(heart-1)
