@@ -18,6 +18,7 @@ import corazon from "@/utils/corazon.png"
 import roto from "@/utils/roto.png"
 
 import { clientPusher } from "@/pusher";
+import { POST } from "@/app/api/jugadores/route";
 
 
 const Track = ({partida, contraseña}) => {//pasar id del server, numero de casillas
@@ -107,6 +108,24 @@ useEffect(()=>{ //FUNCION DE "RESPAWN" AL LLEGAR A 0 "VIDAS"
  },
  [health])
 
+ const PositionPercent = (P) => {
+  const user = JSON.parse(sessionStorage.getItem("datos"))
+  switch (P){
+    case recorrido[1]:
+      fetch(`/api/jugadores?partida=${partida}&porcentaje=${1}&nombre=${user.name}`, {method: "PUT"})
+      break;
+      case recorrido[2]:
+        fetch(`/api/jugadores?partida=${partida}&porcentaje=${2}&nombre=${user.name}`, {method: "PUT"})
+        break;
+        case recorrido[3]:
+          fetch(`/api/jugadores?partida=${partida}&porcentaje=${3}&nombre=${user.name}`, {method: "PUT"})
+          break;
+    default:
+      break;
+  }
+ }
+ 
+
 const handlerPosition = (event) => {//FUNCION DE MOVIMIENTO
   //console.log(event.key, position)//poner un modal que pida hundir los botones para asegurar que la persona se podra mover   
   if( position === 0){
@@ -120,6 +139,7 @@ const handlerPosition = (event) => {//FUNCION DE MOVIMIENTO
               !site.start? "" : setSite({start:site.start-1, end: site.end-1})//si ya esta al final no seguir avanzando
               setPosition(position-1)
               //put de las posision
+              PositionPercent(position)
             }else{
               let heart = health
               setHealth(heart-1)
@@ -134,6 +154,7 @@ const handlerPosition = (event) => {//FUNCION DE MOVIMIENTO
             !site.start? "" : setSite({start:site.start-1, end: site.end-1})//si ya esta al final no seguir avanzando
             setPosition(position-1)
             //put de las posision
+            PositionPercent(position)
           }else{
             let heart = health
               setHealth(heart-1)

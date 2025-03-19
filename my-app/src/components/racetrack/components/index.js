@@ -13,9 +13,14 @@ const Visor = () => {
 
     clientPusher.bind("participantes", (data)=>{ //setear a los usuarios
         //const nuevo = [...participantes]
-        console.log(Array.isArray(data.data))
+        
+        console.log(Array.isArray(JSON.parse(data.data)))
+        setParticipantes(JSON.parse(data.data))
        
     })
+
+    useEffect(()=> {
+    },[])
 
   /*
   unirse a partida

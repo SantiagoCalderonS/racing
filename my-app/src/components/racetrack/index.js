@@ -40,11 +40,14 @@ const RaceTrack = ({partida, contraseña}) => {
     
   name()*/
 
+
+
 //ES NECESARIO TENER UN ID (QUE COINCIDA CON ALGUNO QUE TENGA RELACIONADO EL SERVER), SI NO SE TIENE SE DEBE CREAR
 console.log("entrar")
     clientPusher.subscribe(`Servidor-${partida}`)//EVENTO DE CONEXION AL SERVER
     //clientPusher.bind("app", (data)=>{console.log(data)} )
 
+    fetch(`/api/jugadores?partida=${partida}`, {method: "GET"})
 
     const salir_Y_O_CerrarServer = () => {//funcion para cerrar el perfil del
       // Tu código aquí

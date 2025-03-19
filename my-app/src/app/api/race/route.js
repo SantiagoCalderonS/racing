@@ -50,21 +50,26 @@ export async function POST (req, {params}){//CREAR UNA PARTIDA
   })
 
   if(!buscar){
+
+    const avanceString = JSON.stringify([{name: nombre, porcentaje: "0%"}])
     const nuevoServer = await prisma.servidor.create({
-    data: {
-      name: partida,
-      contraseña: contraseña,
-      pista: "",
-    },})
-    
-    const jugador = await prisma.player.create({
         data: {
-          name: nombre,
-          admin : true,
-          serverId: nuevoServer.id
+            name: partida,
+            contraseña: contraseña,
+            pista: "",
+            avance: avanceString
         },})
-        console.log(jugador)
-        ServidorPusher.trigger(`Servidor-${partida}`, "participantes", {data: [{name:jugador.name, porcentaje: "0%"}]})
+        
+        const jugador = await prisma.player.create({
+        data: {
+            name: nombre,
+            admin : true,
+            serverId: nuevoServer.id
+        },})
+        
+        console.log(nuevoServer)
+    
+        ServidorPusher.trigger(`Servidor-${partida}`, "participantes", {data: nuevoServer.avance})
         return NextResponse.json({jugador},{status: 200} )
 }else{
     throw new Error
@@ -150,7 +155,20 @@ export async function DELETE (req, {params}){//limitar al borrado del server al 
         const PerfilBorrado= await prisma.player.delete({
             where: {id:id},
           })
-          ServidorPusher.trigger(`Servidor-${partida}`, "participantes", {data: {msg:perfil.name}})
+          
+          const arr = JSON.parse(SERVIDOR.avance)
+          const Filtrados = arr.filter(A => A.name !== PerfilBorrado.name)
+          const avanceString = JSON.stringify(Filtrados)
+          const newProgress = await prisma.servidor.update(
+                      {
+                        where:{
+                            name: partida//id del torneo
+                        },
+                        data: {avance: avanceString},
+                        
+                    }
+                     )
+                     ServidorPusher.trigger(`Servidor-${partida}`, "participantes", {data: newProgress.avance })
           console.log("borro usuario")
       }
 

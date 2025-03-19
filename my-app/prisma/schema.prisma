@@ -10,12 +10,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//npx prisma migrate dev
 
 model Servidor {
   id    Int     @id @default(autoincrement())
   name  String  @unique
   contraseña String  @unique
   pista String?
+  avance String?
   active Boolean? @default(false)
   jugadores Player[]
 }
