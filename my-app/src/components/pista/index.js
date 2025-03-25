@@ -62,6 +62,9 @@ const [recorrido, setCorrido] = useState({
   2:0,
   3:0
 })
+
+
+
 //__________________________________________________________________________________________________________________________________________________________________________________________
 
 const init = ()=>{//funcion que da inicio a la "carrera", debe activarse para todos en la sesion
@@ -104,6 +107,8 @@ useEffect(()=>{ //FUNCION DE "RESPAWN" AL LLEGAR A 0 "VIDAS"
     setPosition(pista.length-1)
     setSite({start: pista.length - 3, end: pista.length});
     setHealth(3)
+    const user = JSON.parse(sessionStorage.getItem("datos"))
+    fetch(`/api/jugadores?partida=${partida}&porcentaje=${0}&nombre=${user.name}`, {method: "PUT"}).then(()=>console.log())
   }
  },
  [health])
@@ -112,13 +117,13 @@ useEffect(()=>{ //FUNCION DE "RESPAWN" AL LLEGAR A 0 "VIDAS"
   const user = JSON.parse(sessionStorage.getItem("datos"))
   switch (P){
     case recorrido[1]:
-      fetch(`/api/jugadores?partida=${partida}&porcentaje=${1}&nombre=${user.name}`, {method: "PUT"})
+      fetch(`/api/jugadores?partida=${partida}&porcentaje=${1}&nombre=${user.name}`, {method: "PUT"}).then(()=>console.log())
       break;
       case recorrido[2]:
-        fetch(`/api/jugadores?partida=${partida}&porcentaje=${2}&nombre=${user.name}`, {method: "PUT"})
+        fetch(`/api/jugadores?partida=${partida}&porcentaje=${2}&nombre=${user.name}`, {method: "PUT"}).then(()=>console.log())
         break;
         case recorrido[3]:
-          fetch(`/api/jugadores?partida=${partida}&porcentaje=${3}&nombre=${user.name}`, {method: "PUT"})
+          fetch(`/api/jugadores?partida=${partida}&porcentaje=${3}&nombre=${user.name}`, {method: "PUT"}).then(()=>console.log())
           break;
     default:
       break;
@@ -128,7 +133,7 @@ useEffect(()=>{ //FUNCION DE "RESPAWN" AL LLEGAR A 0 "VIDAS"
 
 const handlerPosition = (event) => {//FUNCION DE MOVIMIENTO
   //console.log(event.key, position)//poner un modal que pida hundir los botones para asegurar que la persona se podra mover   
-  if( position === 0){
+  if( position === 0){//ACABAR
     fetch(`/api/jugadores?partida=${partida}&contraseña=${contraseña}`, {method: "DELETE"})
     /*setAct(false)
     setPista([])*/

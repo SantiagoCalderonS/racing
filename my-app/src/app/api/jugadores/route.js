@@ -123,7 +123,7 @@ try{
            ServidorPusher.trigger(`Servidor-${partida}`, "participantes", {data: newProgress.avance })
            
            ServidorPusher.trigger(`Servidor-${partida}`, "raceEND", {msg: "end"})//QUE AL CERRAR EL SERVIDOR EL TRIGGER HAGA SALIR A TODOS LOS PARTICIPANTES CON UN REDIRECT, AL MISMO TIEMPO QUE SE BORRA TODO LO RELACIONADO AL SERVER
-           return NextResponse.json({jugador},{status: 200} )
+           return NextResponse.json({msg: "termino"},{status: 200} )
        }else{
     throw new Error
      }
@@ -144,9 +144,10 @@ try{
 
 
     const recorrido = {
-        "1" : "30%",
+        "3" : "30%",
         "2" : "60%",
-        "3" : "90%"
+        "1" : "90%",
+        "0" : "0%"
     }
     const server = await prisma.servidor.findFirst({
         where:{name: partida}
@@ -171,12 +172,14 @@ try{
           }
            )
            ServidorPusher.trigger(`Servidor-${partida}`, "participantes", {data: newProgress.avance })
-           return NextResponse.json({jugador},{status: 200} )
+           console.log("sexo")
+           return NextResponse.json({msg: "actualizado"},{status: 200} )
 
        }else{
-    throw new Error
+                throw new Error
      }
  } catch (error) {
+    console.log("si porfavor")
         return NextResponse.json({msg: "error"},{status: 404} )
     }
 

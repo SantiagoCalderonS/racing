@@ -120,9 +120,8 @@ return NextResponse.json({msg: "router"},{status: 200} )
 }
 
 export async function DELETE (req, {params}){//limitar al borrado del server al creador, si no es creador que solo se borre el usuario y lo redireccione a home
-
-
-    const searchParams = req.nextUrl.searchParams;
+try {
+      const searchParams = req.nextUrl.searchParams;
     const partida = searchParams.get("partida");
     const contraseña = searchParams.get("contraseña");
     const admin = searchParams.get("admin");
@@ -143,6 +142,7 @@ export async function DELETE (req, {params}){//limitar al borrado del server al 
       const SERVIDOR = await prisma.servidor.findFirst({
         where: {name: partida},
       })
+      if(!SERVIDOR.id)throw new Error("ya se borró")  
       if(SERVIDOR.id === perfil.serverId && perfil.admin === true){
         const Borrado= await prisma.servidor.delete({
         where: {name:partida},
@@ -175,11 +175,13 @@ export async function DELETE (req, {params}){//limitar al borrado del server al 
     
      //const Borraado= await prisma.servidor.deleteMany({})
     
-    
+     return NextResponse.json({msg: "router"},{status: 200} )   
 
-    
+} catch (error) {
+    return NextResponse.json({msg: "error"},{status: 404} )
+}
 
-return NextResponse.json({msg: "router"},{status: 200} )
+  
 }
 
 
